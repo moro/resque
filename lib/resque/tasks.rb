@@ -40,12 +40,14 @@ namespace :resque do
     threads.each { |thread| thread.join }
   end
 
-  # Preload app files if this is Rails
-  task :preload do
-    if defined? RAILS_ROOT
-      Dir["#{RAILS_ROOT}/app/**/*.rb"].each do |file|
+  if defined?(Rails)
+    # Preload app files if this is Rails
+    task :preload => :environment do
+      Dir["#{Rails.root}/app/**/*.rb"].each do |file|
         require file
       end
     end
+  else
+    task :preload
   end
 end
